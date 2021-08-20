@@ -36,7 +36,7 @@ Row
 ### Number of Tasks Open
 
 ```{r}
-n_unique_tasks     <- length(unique(submission_table$id))
+n_unique_tasks     <- length(unique(submission_table$evaluationid))
 flexdashboard::valueBox(n_unique_tasks , icon = "fa-cogs")
 ```
 
