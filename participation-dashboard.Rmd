@@ -1,7 +1,6 @@
 ---
 title: "NLP Sandbox Participation Dashboard"
 author: "Andrew Lamb"
-date: "8/20/2021"
 output: 
   flexdashboard::flex_dashboard:
     orientation: rows
@@ -10,153 +9,78 @@ output:
 
 ```{r setup, include=FALSE}
 library(flexdashboard)
-library(synapseClient)
-library(tidyverse)
-library(stringr)
-library(ggplot2)
-library(forcats)
-library(viridis)
-library(plotly)
-
-custom_theme_bw <- function() {
-    theme_bw() +
-        theme(axis.title = element_text(face = "bold"),
-              legend.title = element_text(face = "bold"),
-              plot.title = element_text(face = "bold"))
-}
-
+library(magrittr)
 ```
 
 ```{r, message=FALSE, include=FALSE}
-synapseLogin()
-submission_table <- synTableQuery("select * from syn11713824")
-valid_clean_df <- submission_table@values
+synapser::synLogin()
+submission_table <- "select * from syn23633030" %>% 
+  synapser::synTableQuery() %>% 
+  purrr::pluck("filepath") %>% 
+  readr::read_csv() 
 ```
 
 
-Row {data-height=150}
+Row {data-height=75}
 -----------------------------------------------------------------------
 
 ### **Overview**
 
-Submission data — cleaned and aggregated in the Synapse table `syn11713824` — was downloaded using the `synapseClient` package for R on `r lubridate::now("UTC")` UTC. The code used for cleaning participant-provided information can be found [here](https://github.com/GA4GH-DREAM/ga4gh-dream-challenge/blob/master/submission_cleaning.Rmd)  (note: undedited submission information can be found in Synapse table `syn11700144`, and full participant documentation can be found through the [**Submission Tracker boards**](https://www.synapse.org/#!Synapse:syn8507133/wiki/451414) leaderboards).
-
------
-
-Note that successful submissions represent those submissions for which both `status` and `reportStatus` are **“VALIDATED”**.
-
-
-Row
------------------------------------------------------------------------
-
-### Workflows ran
-
-```{r}
-workflows <- n_distinct(valid_clean_df$workflow)
-valueBox(workflows, icon = "fa-cogs")
-```
-
-### Platforms represented
-
-```{r}
-platforms <- n_distinct(valid_clean_df$platform)
-valueBox(platforms, icon = "fa-wrench")
-```
+Submission data — from Synapse table `syn23633030` — was downloaded using the `synapser` package for R on `r lubridate::now("UTC")` UTC. 
 
 
 
 Row
 -----------------------------------------------------------------------
 
-### Fully Documented Submissions
+### Number of Tasks Open
 
 ```{r}
-eval_ids <- unique(valid_clean_df$scopeId)
-total_validated <- map(eval_ids, function(eval_id) {
-    subs <- synGetSubmissions(eval_id, status = "VALIDATED", limit = 100)
-    subs@totalNumberOfResults
-}) %>% 
-    reduce(sum)
-total_documented <- nrow(valid_clean_df)
-gauge(total_documented, min = 0, max = total_validated)
+n_unique_tasks     <- length(unique(submission_table$id))
+flexdashboard::valueBox(n_unique_tasks , icon = "fa-cogs")
 ```
 
-> (out of all submissions with validated outputs)
-
-### Teams Successfully Submitted
+### Number of Submitters
 
 ```{r}
-teams <- synRestGET('/challenge/3090/challengeTeam')
-total_teams <- teams$totalNumberOfResults
-
-successful_teams <- n_distinct(valid_clean_df$team)
-gauge(successful_teams, min = 0, max = total_teams)
+n_unique_submitters <- length(unique(submission_table$submitterid))
+flexdashboard::valueBox(n_unique_submitters, icon = "fa-cogs")
 ```
 
-> (out of all registered Challenge teams)
 
-### Individuals Successfully Submitted
+Row
+-----------------------------------------------------------------------
+### Latest version of the NLP Sandbox schemas
 
 ```{r}
-individuals <- synRestGET('/challenge/3090/participant')
-total_individuals <- individuals$totalNumberOfResults
-
-successful_individuals <- n_distinct(valid_clean_df$user)
-gauge(successful_individuals, min = 0, max = total_individuals)
+version <- gh::gh("GET /repos/nlpsandbox/nlpsandbox-schemas/releases")[[1]]$tag_name
+flexdashboard::valueBox(version, icon = "fa-cogs")
 ```
 
-> (out of all registered Challenge participants)
 
-Row  
+### Number of Tools
+
+```{r}
+n_unique_tools      <- length(unique(submission_table$tool__name))
+flexdashboard::valueBox(n_unique_tools, icon = "fa-cogs")
+```
+
+
+
+Row
 -----------------------------------------------------------------------
 
-### **Workflow:Platform Matrix**
+### Number of Datasets
 
 ```{r}
-plot_workflow_matrix <- function(groupvar) {
-    submission_df <- valid_clean_df
-    y_vals <- unique(submission_df[["workflow"]])
-    x_vals <- unique(submission_df[[names(groupvar)]])
-    num_x <- length(x_vals)
-    
-    y_margin <- max(purrr::map_int(y_vals, stringr::str_length))
-    x_margin <- max(purrr::map_int(x_vals, stringr::str_length))
-    
-    groupcol = as.name(names(groupvar))
-    plot_df <- submission_df %>% 
-        group_by(.dots = c("workflow", names(groupvar))) %>% 
-        tally() %>% 
-        mutate(label = glue::glue("<b><i>{workflow}</i></b><br>[{groupvar}] <b>{group}</b>: {count} submissions",
-                                  workflow = workflow, 
-                                  groupvar = as.character(groupvar),
-                                  group = rlang::UQ(groupcol),
-                                  count = n)) %>% 
-        ungroup() %>% 
-        mutate(workflow = forcats::fct_rev(workflow))
-
-    
-    p <- plot_df %>% 
-        ggplot(aes_string(x = names(groupvar), y = "workflow", text = "label")) +
-        geom_tile(aes(fill = n), alpha = 0.8, colour = "black", size = 0.2) +
-        scale_fill_viridis(discrete = FALSE) +
-        xlab("") +
-        ylab("") +
-        custom_theme_bw() +
-        theme(plot.title = element_text(face = "bold"),
-              legend.title = element_blank(),
-              axis.text.x = element_text(angle = 45, hjust = 1),
-              panel.grid.major = element_blank()
-        )
-
-    ggplotly(p, tooltip = "text") %>%
-        layout(margin = list(l = 10 + y_margin * 6,
-                             b = 10 + x_margin * 4.5),
-               font = list(family = "Roboto, Open Sans, sans-serif"))
-}
+n_unique_datasets   <- length(unique(submission_table$dataset_name))
+flexdashboard::valueBox(n_unique_datasets, icon = "fa-cogs")
 ```
 
-```{r, message=FALSE, warning=FALSE}
-plot_workflow_matrix(groupvar = list(platform = "Platform"))
+### Number of Data sites
+
+```{r}
+flexdashboard::valueBox(2, icon = "fa-cogs")
 ```
 
 Row {data-height=50}
@@ -170,67 +94,66 @@ Row  {.tabset .tabset-fade}
 -----------------------------------------------------------------------
 
 ```{r, include=FALSE}
-plot_workflow_breakdown <- function(groupvar) {
-    submission_df <- valid_clean_df
-    fill_vals <- unique(submission_df[["workflow"]])
-    bar_vals <- unique(submission_df[[names(groupvar)]])
-    num_bars <- length(bar_vals)
-    
-    fill_margin <- max(purrr::map_int(fill_vals, stringr::str_length))
-    bar_margin <- max(purrr::map_int(bar_vals, stringr::str_length))
-    
-    groupcol = as.name(names(groupvar))
-    plot_df <- submission_df %>% 
-        group_by(.dots = c("workflow", names(groupvar))) %>% 
-        tally() %>% 
-        mutate(label = glue::glue("<b><i>{workflow}</i></b><br>[{groupvar}] <b>{group}</b>: {count} submissions",
-                                  workflow = workflow, 
-                                  groupvar = as.character(groupvar),
-                                  group = rlang::UQ(groupcol),
-                                  count = n))
-
-    
-    p <- plot_df %>% 
-        ggplot(aes_string(x = names(groupvar), y = "n", text = "label")) +
-        geom_col(aes(fill = workflow), alpha = 0.8, colour = "black", size = 0.2) +
-        scale_fill_viridis(discrete = TRUE) +
-        coord_flip() +
-        xlab("") +
-        ylab("") +
-        custom_theme_bw() +
-        theme(plot.title = element_text(face = "bold"),
-              legend.title = element_blank()) +
-        ggtitle(glue::glue("Workflows by {groupvar}", 
-                           groupvar = as.character(groupvar)))
-
-    ggplotly(p, tooltip = "text") %>%
-        layout(margin = list(l = 12 + bar_margin * 6,
-                             r = 10 + fill_margin * 6),
-               font = list(family = "Roboto, Open Sans, sans-serif"))
-}
+# plot_workflow_breakdown <- function(groupvar) {
+#     submission_df <- valid_clean_df
+#     fill_vals <- unique(submission_df[["workflow"]])
+#     bar_vals <- unique(submission_df[[names(groupvar)]])
+#     num_bars <- length(bar_vals)
+#     
+#     fill_margin <- max(purrr::map_int(fill_vals, stringr::str_length))
+#     bar_margin <- max(purrr::map_int(bar_vals, stringr::str_length))
+#     
+#     groupcol = as.name(names(groupvar))
+#     plot_df <- submission_df %>% 
+#         group_by(.dots = c("workflow", names(groupvar))) %>% 
+#         tally() %>% 
+#         mutate(label = glue::glue("<b><i>{workflow}</i></b><br>[{groupvar}] <b>{group}</b>: {count} submissions",
+#                                   workflow = workflow, 
+#                                   groupvar = as.character(groupvar),
+#                                   group = rlang::UQ(groupcol),
+#                                   count = n))
+#     
+#     p <- plot_df %>% 
+#         ggplot(aes_string(x = names(groupvar), y = "n", text = "label")) +
+#         geom_col(aes(fill = workflow), alpha = 0.8, colour = "black", size = 0.2) +
+#         scale_fill_viridis(discrete = TRUE) +
+#         coord_flip() +
+#         xlab("") +
+#         ylab("") +
+#         custom_theme_bw() +
+#         theme(plot.title = element_text(face = "bold"),
+#               legend.title = element_blank()) +
+#         ggtitle(glue::glue("Workflows by {groupvar}", 
+#                            groupvar = as.character(groupvar)))
+#     ggplotly(p, tooltip = "text") %>%
+#         layout(margin = list(l = 12 + bar_margin * 6,
+#                              r = 10 + fill_margin * 6),
+#                font = list(family = "Roboto, Open Sans, sans-serif"))
+# }
 ```
 
 ### Platform
 
 ```{r, warning=FALSE, message=FALSE}
-plot_workflow_breakdown(groupvar = list(platform = "Platform"))
+# plot_workflow_breakdown(groupvar = list(platform = "Platform"))
 ```
 
 ### Environment
 
 ```{r, message=FALSE, warning=FALSE}
-plot_workflow_breakdown(groupvar = list(environment = "Environment"))
+# plot_workflow_breakdown(groupvar = list(environment = "Environment"))
 ```
 
 ### Team
 
 ```{r, message=FALSE, warning=FALSE}
-plot_workflow_breakdown(groupvar = list(team = "Team"))
+# plot_workflow_breakdown(groupvar = list(team = "Team"))
 ```
 
 
 ### Type
 
 ```{r, message=FALSE, warning=FALSE}
-plot_workflow_breakdown(groupvar = list(workflow_type = "Type"))
+# plot_workflow_breakdown(groupvar = list(workflow_type = "Type"))
 ```
+
