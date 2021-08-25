@@ -17,7 +17,16 @@ synapser::synLogin()
 submission_table <- "select * from syn23633030" %>% 
   synapser::synTableQuery() %>% 
   purrr::pluck("filepath") %>% 
-  readr::read_csv()
+  readr::read_csv() %>% 
+  dplyr::select("createdOn") %>% 
+  dplyr::mutate(
+    "datetime" = lubridate::as_datetime(
+      .data$createdOn/1000, origin = "1970-01-01"
+    ),
+    "date" = lubridate::ymd(lubridate::floor_date(.data$datetime, "day")),
+    "year" = forcats::as_factor(lubridate::year(.data$datetime)),
+    "month" = lubridate::month(.data$datetime, label = TRUE, abbr = TRUE)
+  ) 
 ```
 
 
@@ -90,15 +99,6 @@ Row
 
 ```{r}
 n_submission_table <- submission_table %>% 
-  dplyr::select("createdOn") %>% 
-  dplyr::mutate(
-    "datetime" = lubridate::as_datetime(
-      .data$createdOn/1000, origin = "1970-01-01"
-    ),
-    "date" = lubridate::ymd(lubridate::floor_date(.data$datetime, "day")),
-    "year" = forcats::as_factor(lubridate::year(.data$datetime)),
-    "month" = lubridate::month(.data$datetime, label = TRUE, abbr = TRUE)
-  ) %>% 
   dplyr::filter(.data$datetime > (lubridate::now() - lubridate::years(1))) %>% 
   dplyr::group_by(.data$month) %>% 
   dplyr::tally()
