@@ -98,7 +98,7 @@ Row
 
 ```{r}
 n_submission_table <- submission_table %>% 
-  dplyr::filter(.data$datetime > (lubridate::now() - lubridate::years(1))) %>% 
+  dplyr::filter(.data$datetime > (lubridate::now() - lubridate::dyears(1))) %>% 
   dplyr::group_by(.data$month) %>% 
   dplyr::tally()
 
