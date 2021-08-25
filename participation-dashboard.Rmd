@@ -98,7 +98,7 @@ Row
 
 ```{r}
 n_submission_table <- submission_table %>% 
-  dplyr::filter(.data$datetime > (lubridate::now() - lubridate::years(1))) %>% 
+  dplyr::filter(.data$datetime > (lubridate::now() - lubridate::dyears(1))) %>% 
   dplyr::group_by(.data$month) %>% 
   dplyr::tally()
 
@@ -110,6 +110,25 @@ n_submission_table <- submission_table %>%
   )
 
 n_submission_plot
+
+```
+
+Row
+-----------------------------------------------------------------------
+
+### Number of successful submissions in the last month.
+
+```{r}
+n_statuses <- submission_table %>%
+  dplyr::filter(.data$datetime > (lubridate::now() - lubridate::dmonths(1))) %>% 
+  dplyr::pull("status") 
+  
+
+flexdashboard::gauge(
+  value = length(purrr::keep(n_statuses, ~.x == "ACCEPTED")),
+  min = 0,
+  max = length(n_statuses)
+)
 
 ```
 
