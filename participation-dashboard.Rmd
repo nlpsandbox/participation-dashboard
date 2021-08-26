@@ -22,7 +22,15 @@ submission_table <-
   stringr::str_c("select * from ", .) %>% 
   synapser::synTableQuery() %>% 
   purrr::pluck("filepath") %>% 
-  readr::read_csv() 
+  readr::read_csv() %>% 
+  dplyr::mutate(
+    "datetime" = lubridate::as_datetime(
+      .data$createdOn/1000, origin = "1970-01-01"
+    ),
+    "date" = lubridate::ymd(lubridate::floor_date(.data$datetime, "day")),
+    "year" = forcats::as_factor(lubridate::year(.data$datetime)),
+    "month" = lubridate::month(.data$datetime, label = TRUE, abbr = TRUE)
+  ) 
 ```
 
 
@@ -87,6 +95,85 @@ flexdashboard::valueBox(n_unique_datasets, icon = "fa-cogs")
 ```{r}
 flexdashboard::valueBox(2, icon = "fa-cogs")
 ```
+
+Row
+-----------------------------------------------------------------------
+
+### Number of submissions per month in the last year.
+
+```{r}
+n_submission_count_table <- submission_table %>% 
+  dplyr::select("year", "month", "date") %>% 
+  dplyr::filter(.data$date > (lubridate::now() - lubridate::dyears(1))) %>% 
+  dplyr::group_by(.data$month, .data$year) %>% 
+  dplyr::tally(name = "count") 
+
+
+current_year <- as.character(lubridate::year(lubridate::now()))
+previous_year <- as.character(lubridate::year(lubridate::now() - lubridate::dyears(1)))
+
+n_submission_complete_table <-
+  submission_table %>% 
+  dplyr::select("year", "month") %>% 
+  dplyr::distinct() %>% 
+  dplyr::mutate(
+    "year" = forcats::fct_expand(.data$year, previous_year, current_year),
+    "year" = forcats::fct_relevel(.data$year, previous_year, current_year)
+  ) %>%
+  tidyr::complete(.data$month, .data$year) %>%
+  dplyr::mutate(
+    "date" = lubridate::ymd(
+      stringr::str_c(.data$year, .data$month, sep = " "),
+      truncated = 1
+    )
+  ) %>% 
+  dplyr::filter(
+    .data$date > (lubridate::now() - lubridate::dyears(1)),
+    .data$date <= (lubridate::now())
+  ) %>% 
+  dplyr::arrange(.data$year, .data$month) %>% 
+  dplyr::mutate(
+    "label" = forcats::as_factor(
+      stringr::str_c(.data$month, .data$year, sep = " ")
+    )
+  ) %>% 
+  dplyr::select("year", "month", "label")
+
+
+n_submission_table <- 
+  dplyr::left_join(
+    n_submission_complete_table, 
+    n_submission_count_table,
+    by = c("month", "year")
+  ) %>% 
+  dplyr::mutate(
+    "count" = dplyr::if_else(
+      is.na(.data$count),
+      0L,
+      .data$count
+    )
+  ) %>% 
+  dplyr::select("count", "label")   
+  
+
+
+n_submission_plot <- plotly::plot_ly(
+  n_submission_table,
+  x = ~label,
+  y = ~count,
+  type = "bar"
+) %>%
+  plotly::layout(
+    xaxis = list(title = "Month"),
+    yaxis = list(title = "Submissions per month")
+  )
+
+n_submission_plot
+
+```
+
+
+### Placeholder
 
 Row {data-height=50}
 -----------------------------------------------------------------------
