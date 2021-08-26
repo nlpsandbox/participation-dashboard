@@ -5,6 +5,8 @@ output:
   flexdashboard::flex_dashboard:
     orientation: rows
     vertical_layout: scroll
+params:
+  source_table_synapse_id: ""
 ---
 
 ```{r setup, include=FALSE}
@@ -14,7 +16,10 @@ library(magrittr)
 
 ```{r, message=FALSE, include=FALSE}
 synapser::synLogin()
-submission_table <- "select * from syn23633030" %>% 
+
+submission_table <- 
+  params$source_table_synapse_id %>% 
+  stringr::str_c("select * from ", .) %>% 
   synapser::synTableQuery() %>% 
   purrr::pluck("filepath") %>% 
   readr::read_csv() 
@@ -26,7 +31,7 @@ Row {data-height=75}
 
 ### **Overview**
 
-Submission data — from Synapse table `syn23633030` — was downloaded using the `synapser` package for R on `r lubridate::now("UTC")` UTC. 
+Submission data — from Synapse table `r params$source_table_id` — was downloaded using the `synapser` package for R on `r lubridate::now("UTC")` UTC. 
 
 
 
@@ -156,4 +161,3 @@ Row  {.tabset .tabset-fade}
 ```{r, message=FALSE, warning=FALSE}
 # plot_workflow_breakdown(groupvar = list(workflow_type = "Type"))
 ```
-
