@@ -11,9 +11,9 @@ RUN apt-get update -qq -y \
     && rm -rf /var/lib/apt/lists/*
 
 RUN Rscript -e "install.packages('argparse')" \
-    && Rscript -e "install.packages('flexdashboard')"
+    && Rscript -e "install.packages('flexdashboard')" \
     && Rscript -e "install.packages('synapser', repos=c('http://ran.synapse.org', 'http://cran.fhcrc.org'))"
 
-COPY participation-dashboard.Rmd ./
-COPY render_markdown.R ./
+WORKDIR /
+COPY participation-dashboard.Rmd render_markdown.R ./
 RUN chmod a+x render_markdown.R
