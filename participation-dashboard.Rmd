@@ -91,6 +91,24 @@ flexdashboard::valueBox(n_unique_datasets, icon = "fa-cogs")
 flexdashboard::valueBox(2, icon = "fa-cogs")
 ```
 
+Row
+-----------------------------------------------------------------------
+
+### Number of Users
+
+```{r}
+n_users <- 3413388L %>% 
+  synapser::synGetTeamMembers() %>% 
+  synapser::as.list() %>% 
+  length()
+  
+flexdashboard::valueBox(n_users, icon = "fa-cogs")
+```
+
+### Placeholder
+
+
+
 Row 
 -----------------------------------------------------------------------
 
