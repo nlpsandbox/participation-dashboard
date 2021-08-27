@@ -97,8 +97,7 @@ jobs:
       id: docker_build
       uses: docker/build-push-action@v2
       with:
-        context: server
-        file: server/Dockerfile
+        context: .
         platforms: linux/amd64
         push: ${{ env.push }}
         tags: ${{ env.tags }}
