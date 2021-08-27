@@ -7,6 +7,7 @@ RUN Rscript -e "install.packages('argparse')"
 RUN Rscript -e "install.packages('flexdashboard')"
 RUN Rscript -e "install.packages('synapser', repos=c('http://ran.synapse.org', 'http://cran.fhcrc.org'))"
 
+ENV SYNAPSE_AUTH_TOKEN=""
 COPY participation-dashboard.Rmd ./
 COPY render_markdown.R ./
 RUN chmod a+x render_markdown.R
