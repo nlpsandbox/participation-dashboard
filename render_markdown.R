@@ -1,41 +1,45 @@
-library(argparse)
-
-parser = ArgumentParser()
-
-parser$add_argument(
-  "--source_table_synapse_id",
-  type = "character",
-  required = TRUE
-)
-
-parser$add_argument(
-  "--destination_folder_synapse_id",
-  type = "character",
-  default = NULL
-)
-
-args = parser$parse_args()
-
 synapser::synLogin()
 
-
-if(is.null(args$destination_folder_synapse_id)){
-  output_file <- "/build/participation-dashboard.html"
+if(interactive()){
+  build_dir <- "./build"
 } else {
-  output_file <- "./participation-dashboard.html"
+  build_dir <- "/build"
 }
 
-rmarkdown::render(
-  input       = "./participation-dashboard.Rmd",
-  output_file = output_file,
-  params      = list("source_table_synapse_id" = args$source_table_synapse_id)
-)
+if(!dir.exists(build_dir)){
+  dir.create(build_dir)
+  config_file <- "./config.json"
+} else{
+  if(file.exists(stringr::str_c(build_dir, "/config.json"))){
+    config_file <-  stringr::str_c(build_dir, "/config.json")
+  } else {
+    config_file <- "./config.json"
+  }
+}
 
-if(!is.null(args$destination_folder_synapse_id)){
-  entity <- synapser::File(
-    "./participation-dashboard.html",
-    parent = args$destination_folder_synapse_id
+config <- rjson::fromJSON(file = config_file)
+
+for(job in config$jobs){
+
+  output_file <- stringr::str_c(build_dir, "/", job$output_file)
+
+  rmarkdown::render(
+    input       = job$markdown_file,
+    output_file = output_file,
+    params      = c(
+      list("title" = job$title),
+      job$notebook_parameters
+    )
   )
 
-  synapser::synStore(entity)
+  if(job$upload_to_synapse){
+    entity <- synapser::File(
+      output_file,
+      parent = job$destination_folder_synapse_id
+    )
+
+    synapser::synStore(entity)
+  }
 }
+
+

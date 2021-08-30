@@ -13,9 +13,11 @@ RUN apt-get update -qq -y \
 # hadolint ignore=DL3059
 RUN Rscript -e "install.packages('argparse')" \
     && Rscript -e "install.packages('flexdashboard')" \
+    && Rscript -e "install.packages('rjson')" \
     && Rscript -e "install.packages('plotly')" \
     && Rscript -e "install.packages('synapser', repos=c('http://ran.synapse.org', 'http://cran.fhcrc.org'))"
 
 WORKDIR /
 COPY participation-dashboard.Rmd render_markdown.R ./
+COPY participation-dashboard.Rmd config.json ./
 RUN chmod a+x render_markdown.R

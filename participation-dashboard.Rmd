@@ -1,25 +1,79 @@
 ---
-title: "NLP Sandbox Participation Dashboard"
 author: "Andrew Lamb"
 output: 
   flexdashboard::flex_dashboard:
     orientation: rows
     vertical_layout: scroll
 params:
-  source_table_synapse_id: ""
+  title: "NLP Sandbox Participation Dashboard"
+  source_table_synapse_id: 
+  evaluation_ids: 
+  filter_with_table: False
+  filter_table_synapse_id:
+  
+  
+title: "`r params$title`"
 ---
 
 ```{r setup, include=FALSE}
-library(flexdashboard)
 library(magrittr)
 ```
 
 ```{r, message=FALSE, include=FALSE}
 synapser::synLogin()
 
-submission_table <- 
-  params$source_table_synapse_id %>% 
-  stringr::str_c("select * from ", .) %>% 
+columns <- c(
+  "createdOn",
+  "evaluationid",
+  "submitterid",
+  "dataset_name",
+  "tool__name",
+  "status"
+)
+
+if(params$filter_with_table){
+  
+  ids <-
+    stringr::str_c(
+      "select name from ", 
+      params$filter_table_synapse_id,
+      " where evaluationid in (",
+      stringr::str_c(params$evaluation_ids, collapse = ", "),
+      ")"
+    ) %>% 
+    synapser::synTableQuery() %>% 
+    purrr::pluck("filepath") %>% 
+    readr::read_csv() %>% 
+    dplyr::pull("name") %>% 
+    unique()
+  
+  query <- 
+    stringr::str_c(
+      "select ",
+      stringr::str_c(columns, collapse = ", "),
+      " from ", 
+      params$source_table_synapse_id,
+      " where id in (",
+      stringr::str_c(ids, collapse = ", "),
+      ")"
+    )
+  
+  rm(ids)
+  
+} else {
+  query <- 
+    stringr::str_c(
+      "select ",
+      stringr::str_c(columns, collapse = ", "),
+      " from ", 
+      params$source_table_synapse_id,
+      " where evaluationid in (",
+      stringr::str_c(params$evaluation_ids, collapse = ", "),
+      ")"
+    ) 
+}
+
+submission_table <- query %>% 
   synapser::synTableQuery() %>% 
   purrr::pluck("filepath") %>% 
   readr::read_csv() %>% 
@@ -69,7 +123,7 @@ Row {data-height=75}
 
 ### **Overview**
 
-Submission data — from Synapse table `r params$source_table_id` — was downloaded using the `synapser` package for R on `r lubridate::now("UTC")` UTC. 
+Submission data — from Synapse table `r params$source_table_synapse_id` — was downloaded using the `synapser` package for R on `r lubridate::now("UTC")` UTC. 
 
 
 
