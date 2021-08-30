@@ -5,8 +5,8 @@
       "title": "NLP Sandbox Participation Dashboard",
       "markdown_file": "participation-dashboard.Rmd",
       "output_file": "participation-dashboard.html",
-      "upload_to_synapse": false,
-      "destination_folder_synapse_id": "",
+      "upload_to_synapse": true,
+      "destination_folder_synapse_id": "syn26127246",
       "notebook_parameters":
       {
         "source_table_synapse_id": "syn23633030",
@@ -18,8 +18,8 @@
       "title": "NLP Sandbox Participation Dashboard - MCW",
       "markdown_file": "participation-dashboard.Rmd",
       "output_file": "participation-dashboard-mcw.html",
-      "upload_to_synapse": false,
-      "destination_folder_synapse_id": "",
+      "upload_to_synapse": true,
+      "destination_folder_synapse_id": "syn26127246",
       "notebook_parameters":
       {
         "source_table_synapse_id": "syn23633030",
