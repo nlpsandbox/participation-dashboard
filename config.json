@@ -1,0 +1,32 @@
+{
+  "jobs": [
+    {
+      "name": "Participation - All",
+      "title": "NLP Sandbox Participation Dashboard",
+      "markdown_file": "participation-dashboard.Rmd",
+      "output_file": "participation-dashboard.html",
+      "upload_to_synapse": false,
+      "destination_folder_synapse_id": "",
+      "notebook_parameters":
+      {
+        "source_table_synapse_id": "syn23633030",
+        "evaluation_ids": [9614652, 9614657, 9614799, 9614797, 9614658]
+      }
+    },
+    {
+      "name": "Participation - MCW",
+      "title": "NLP Sandbox Participation Dashboard - MCW",
+      "markdown_file": "participation-dashboard.Rmd",
+      "output_file": "participation-dashboard-mcw.html",
+      "upload_to_synapse": false,
+      "destination_folder_synapse_id": "",
+      "notebook_parameters":
+      {
+        "source_table_synapse_id": "syn23633030",
+        "evaluation_ids": [9614719, 9614720, 9614804, 9614803, 9614721],
+        "filter_with_table": true,
+        "filter_table_synapse_id": "syn25582644"
+      }
+    }
+  ]
+}
