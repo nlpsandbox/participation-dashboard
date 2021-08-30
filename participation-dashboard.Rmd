@@ -47,7 +47,7 @@ if(params$filter_with_table){
     dplyr::pull("name") %>% 
     unique()
   
-  submission_table <- 
+  query <- 
     stringr::str_c(
       "select ",
       stringr::str_c(columns, collapse = ", "),
@@ -56,23 +56,12 @@ if(params$filter_with_table){
       " where id in (",
       stringr::str_c(ids, collapse = ", "),
       ")"
-    ) %>% 
-    synapser::synTableQuery() %>% 
-    purrr::pluck("filepath") %>% 
-    readr::read_csv() %>% 
-    dplyr::mutate(
-      "datetime" = lubridate::as_datetime(
-        .data$createdOn/1000, origin = "1970-01-01"
-      ),
-      "date" = lubridate::ymd(lubridate::floor_date(.data$datetime, "day")),
-      "year" = forcats::as_factor(lubridate::year(.data$datetime)),
-      "month" = lubridate::month(.data$datetime, label = TRUE, abbr = TRUE)
-    ) 
+    )
   
   rm(ids)
   
 } else {
-  submission_table <- 
+  query <- 
     stringr::str_c(
       "select ",
       stringr::str_c(columns, collapse = ", "),
@@ -81,19 +70,21 @@ if(params$filter_with_table){
       " where evaluationid in (",
       stringr::str_c(params$evaluation_ids, collapse = ", "),
       ")"
-    ) %>% 
-    synapser::synTableQuery() %>% 
-    purrr::pluck("filepath") %>% 
-    readr::read_csv() %>% 
-    dplyr::mutate(
-      "datetime" = lubridate::as_datetime(
-        .data$createdOn/1000, origin = "1970-01-01"
-      ),
-      "date" = lubridate::ymd(lubridate::floor_date(.data$datetime, "day")),
-      "year" = forcats::as_factor(lubridate::year(.data$datetime)),
-      "month" = lubridate::month(.data$datetime, label = TRUE, abbr = TRUE)
     ) 
 }
+
+submission_table <- query %>% 
+  synapser::synTableQuery() %>% 
+  purrr::pluck("filepath") %>% 
+  readr::read_csv() %>% 
+  dplyr::mutate(
+    "datetime" = lubridate::as_datetime(
+      .data$createdOn/1000, origin = "1970-01-01"
+    ),
+    "date" = lubridate::ymd(lubridate::floor_date(.data$datetime, "day")),
+    "year" = forcats::as_factor(lubridate::year(.data$datetime)),
+    "month" = lubridate::month(.data$datetime, label = TRUE, abbr = TRUE)
+  ) 
 
 current_year <- as.character(lubridate::year(lubridate::now()))
 previous_year <- as.character(lubridate::year(lubridate::now() - lubridate::dyears(1)))
