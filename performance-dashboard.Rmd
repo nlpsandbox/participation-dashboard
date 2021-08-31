@@ -75,7 +75,8 @@ Row
 ### Performance
 
 ```{r}
-plot <- 
+
+plot <-
   plotly::plot_ly(
     data = score_table,
     x = ~date,
@@ -96,13 +97,14 @@ plot <-
     data = dplyr::filter(score_table, .data$temp_max),
     x = ~date,
     y = ~score,
-    type ="scatter", 
+    type ="scatter",
     mode = "lines"
-  ) %>% 
+  ) %>%
   plotly::layout(
     xaxis = list(title = "Date"),
     yaxis = list(title = "Score")
-  ) 
+  ) %>% 
+  plotly::partial_bundle()
 
 
 plot
