@@ -15,6 +15,7 @@ RUN Rscript -e "install.packages('argparse')" \
     && Rscript -e "install.packages('flexdashboard')" \
     && Rscript -e "install.packages('rjson')" \
     && Rscript -e "install.packages('plotly')" \
+    && Rscript -e "install.packages('ggplot2')" \
     && Rscript -e "install.packages('synapser', repos=c('http://ran.synapse.org', 'http://cran.fhcrc.org'))"
 
 WORKDIR /
