@@ -6,8 +6,8 @@ output:
     vertical_layout: scroll
 params:
   title: "NLP Sandbox Participation Dashboard"
-  source_table_synapse_id: 
-  evaluation_ids: 
+  source_table_synapse_id: "syn23633030"
+  evaluation_ids: [9614652, 9614657, 9614799, 9614797, 9614658]
   filter_with_table: False
   filter_table_synapse_id:
   
@@ -203,7 +203,7 @@ Row
 
 ### Number of submissions per month in the last year.
 
-```{r}
+```{r fig.width=15,fig.height=5}
 
 n_submission_count_table <- submission_table %>% 
   dplyr::select("year", "month", "date") %>% 
@@ -226,27 +226,19 @@ n_submission_table <-
     )
   ) %>% 
   dplyr::select("count", "label")   
-  
 
+n_submission_table %>% 
+  ggplot2::ggplot() +
+  ggplot2::aes(x = label, y = count) +
+  ggplot2::geom_bar(stat = "identity", fill = "steelblue") +
+  ggplot2::theme_minimal()
 
-n_submission_plot <- plotly::plot_ly(
-  n_submission_table,
-  x = ~label,
-  y = ~count,
-  type = "bar"
-) %>%
-  plotly::layout(
-    xaxis = list(title = "Month"),
-    yaxis = list(title = "Submissions per month")
-  )
-
-n_submission_plot
 
 ```
 
 ### Number of unique submitters per month
 
-```{r}
+```{r fig.width=15,fig.height=5}
 
 n_submitter_count_table <- submission_table %>% 
   dplyr::filter(.data$date > (lubridate::now() - lubridate::dyears(1))) %>% 
@@ -269,21 +261,14 @@ n_submitter_table <-
     )
   ) %>% 
   dplyr::select("count", "label")   
-  
+
+n_submitter_table %>% 
+  ggplot2::ggplot() +
+  ggplot2::aes(x = label, y = count) +
+  ggplot2::geom_bar(stat = "identity", fill = "steelblue") +
+  ggplot2::theme_minimal()
 
 
-n_submitter_plot <- plotly::plot_ly(
-  n_submitter_table,
-  x = ~label,
-  y = ~count,
-  type = "bar"
-) %>%
-  plotly::layout(
-    xaxis = list(title = "Month"),
-    yaxis = list(title = "Unique submitters per month")
-  )
-
-n_submitter_plot
 ```
 
 Row 
