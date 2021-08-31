@@ -6,7 +6,7 @@
       "title": "NLP Sandbox Date Annotation Performance Dashboard",
       "markdown_file": "performance-dashboard.Rmd",
       "output_file": "performance-dashboard_date_annotation.html",
-      "upload_to_synapse": false,
+      "upload_to_synapse": true,
       "destination_folder_synapse_id": "syn26127246",
       "notebook_parameters":
       {
@@ -20,7 +20,7 @@
       "title": "NLP Sandbox Person Name Annotation Performance Dashboard",
       "markdown_file": "performance-dashboard.Rmd",
       "output_file": "performance-dashboard_person_name_annotation.html",
-      "upload_to_synapse": false,
+      "upload_to_synapse": true,
       "destination_folder_synapse_id": "syn26127246",
       "notebook_parameters":
       {
@@ -34,7 +34,7 @@
       "title": "NLP Sandbox Contact Annotation Performance Dashboard",
       "markdown_file": "performance-dashboard.Rmd",
       "output_file": "performance-dashboard_contact_annotation.html",
-      "upload_to_synapse": false,
+      "upload_to_synapse": true,
       "destination_folder_synapse_id": "syn26127246",
       "notebook_parameters":
       {
@@ -48,7 +48,7 @@
       "title": "NLP Sandbox ID Annotation Performance Dashboard",
       "markdown_file": "performance-dashboard.Rmd",
       "output_file": "performance-dashboard_id_annotation.html",
-      "upload_to_synapse": false,
+      "upload_to_synapse": true,
       "destination_folder_synapse_id": "syn26127246",
       "notebook_parameters":
       {
@@ -62,7 +62,7 @@
       "title": "NLP Sandbox Location Annotation Performance Dashboard",
       "markdown_file": "performance-dashboard.Rmd",
       "output_file": "performance-dashboard_location_annotation.html",
-      "upload_to_synapse": false,
+      "upload_to_synapse": true,
       "destination_folder_synapse_id": "syn26127246",
       "notebook_parameters":
       {
@@ -78,7 +78,7 @@
       "title": "NLP Sandbox Participation Dashboard",
       "markdown_file": "participation-dashboard.Rmd",
       "output_file": "participation-dashboard.html",
-      "upload_to_synapse": false,
+      "upload_to_synapse": true,
       "destination_folder_synapse_id": "syn26127246",
       "notebook_parameters":
       {
@@ -92,7 +92,7 @@
       "title": "NLP Sandbox Participation Dashboard - MCW",
       "markdown_file": "participation-dashboard.Rmd",
       "output_file": "participation-dashboard-mcw.html",
-      "upload_to_synapse": false,
+      "upload_to_synapse": true,
       "destination_folder_synapse_id": "syn26127246",
       "notebook_parameters":
       {
