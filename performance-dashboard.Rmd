@@ -7,8 +7,8 @@ output:
 params:
   title: "NLP Sandbox Performance Dashboard"
   source_table_synapse_id: "syn23633030"
-  source_table_score_column:
-  evaluation_id:
+  source_table_score_column: ""
+  evaluation_id: 0
 
 title: "`r params$title`"
 ---
@@ -53,10 +53,9 @@ score_table <-
   ) %>% 
   dplyr::arrange(.data$datetime) %>% 
   dplyr::mutate(
-    "cum_max" = cummax(.data$score),
-    "temp_max" = .data$cum_max == .data$score
+    "temp_max" = .data$score > cummax(dplyr::lag(.data$score, default = 0))
   ) %>% 
-  dplyr::select("score", "date", "temp_max", "tool__author", "tool__name")
+  dplyr::select("score", "date", "datetime", "temp_max", "tool__author", "tool__name")
 
 ```
 
@@ -90,7 +89,7 @@ plot <-
       '</br> Team: ', tool__author,
       '</br> Tool: ', tool__name,
       '</br> Score: ', score,
-      '</br> Date: ', date
+      '</br> Date Time: ', datetime
     )
   ) %>%
   plotly::add_trace(
@@ -102,7 +101,10 @@ plot <-
   ) %>%
   plotly::layout(
     xaxis = list(title = "Date"),
-    yaxis = list(title = "Score")
+    yaxis = list(
+      title = "Score",
+      range = list(0, 1)
+    )
   ) %>% 
   plotly::partial_bundle()
 
