@@ -1,0 +1,115 @@
+---
+author: "Andrew Lamb"
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: rows
+    vertical_layout: scroll
+params:
+  title: "NLP Sandbox Performance Dashboard"
+  source_table_synapse_id: "syn23633030"
+  source_table_score_column: ""
+  evaluation_id: 0
+
+title: "`r params$title`"
+---
+
+```{r setup, include=FALSE}
+library(flexdashboard)
+library(magrittr)
+```
+
+```{r, message=FALSE, include=FALSE}
+synapser::synLogin()
+
+score_table <-
+  params$source_table_synapse_id %>%
+  stringr::str_c(
+    "select tool__author, tool__name, createdOn, ",
+    params$source_table_score_column,
+    " from ", 
+    ., 
+    " where submission_status = 'SCORED'",
+    " and evaluationid = '",
+    params$evaluation_id,
+    "'"
+  ) %>%
+  synapser::synTableQuery() %>%
+  purrr::pluck("filepath") %>%
+  readr::read_csv() %>%
+  dplyr::mutate(
+    "datetime" = lubridate::as_datetime(
+      .data$createdOn/1000, origin = "1970-01-01"
+    ),
+    "date" = lubridate::ymd(lubridate::floor_date(.data$datetime, "day")),
+    "year" = forcats::as_factor(lubridate::year(.data$datetime)),
+    "month" = lubridate::month(.data$datetime, label = TRUE, abbr = TRUE)
+  ) %>% 
+  dplyr::select(
+    "tool__name",
+    "tool__author", 
+    "datetime",
+    "date",
+    "score" = params$source_table_score_column
+  ) %>% 
+  dplyr::arrange(.data$datetime) %>% 
+  dplyr::mutate(
+    "temp_max" = .data$score > cummax(dplyr::lag(.data$score, default = 0))
+  ) %>% 
+  dplyr::select("score", "date", "datetime", "temp_max", "tool__author", "tool__name")
+
+```
+
+
+Row {data-height=75}
+-----------------------------------------------------------------------
+
+### **Overview**
+
+Submission data — from Synapse table `r params$source_table_synapse_id` — was downloaded using the `synapser` package for R on `r lubridate::now("UTC")` UTC. 
+
+
+Row 
+-----------------------------------------------------------------------
+
+### Performance
+
+```{r}
+
+plot <-
+  plotly::plot_ly(
+    data = score_table,
+    x = ~date,
+    y = ~score,
+    type = "scatter",
+    mode = "markers",
+    color = ~temp_max,
+    hoverinfo = 'text',
+    showlegend = FALSE,
+    text = ~paste(
+      '</br> Team: ', tool__author,
+      '</br> Tool: ', tool__name,
+      '</br> Score: ', score,
+      '</br> Date Time: ', datetime
+    )
+  ) %>%
+  plotly::add_trace(
+    data = dplyr::filter(score_table, .data$temp_max),
+    x = ~date,
+    y = ~score,
+    type ="scatter",
+    mode = "lines"
+  ) %>%
+  plotly::layout(
+    xaxis = list(title = "Date"),
+    yaxis = list(
+      title = "Score",
+      range = list(0, 1)
+    )
+  ) %>% 
+  plotly::partial_bundle()
+
+
+plot
+
+
+```

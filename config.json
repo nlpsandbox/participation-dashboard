@@ -1,5 +1,78 @@
 {
   "jobs": [
+
+    {
+      "name": "Performance - Date Annotation",
+      "title": "NLP Sandbox Date Annotation Performance Dashboard",
+      "markdown_file": "performance-dashboard.Rmd",
+      "output_file": "performance-dashboard_date_annotation.html",
+      "upload_to_synapse": true,
+      "destination_folder_synapse_id": "syn26127246",
+      "notebook_parameters":
+      {
+        "source_table_score_column": "location_F1_instance_relax",
+        "evaluation_id": 9614652
+      }
+    },
+
+    {
+      "name": "Performance - Person Name annotation",
+      "title": "NLP Sandbox Person Name Annotation Performance Dashboard",
+      "markdown_file": "performance-dashboard.Rmd",
+      "output_file": "performance-dashboard_person_name_annotation.html",
+      "upload_to_synapse": true,
+      "destination_folder_synapse_id": "syn26127246",
+      "notebook_parameters":
+      {
+        "source_table_score_column": "location_F1_instance_relax",
+        "evaluation_id":  9614657
+      }
+    },
+
+    {
+      "name": "Performance - Contact Annotation",
+      "title": "NLP Sandbox Contact Annotation Performance Dashboard",
+      "markdown_file": "performance-dashboard.Rmd",
+      "output_file": "performance-dashboard_contact_annotation.html",
+      "upload_to_synapse": true,
+      "destination_folder_synapse_id": "syn26127246",
+      "notebook_parameters":
+      {
+        "source_table_score_column": "location_F1_instance_relax",
+        "evaluation_id": 9614799
+      }
+    },
+
+    {
+      "name": "Performance - ID Annotation",
+      "title": "NLP Sandbox ID Annotation Performance Dashboard",
+      "markdown_file": "performance-dashboard.Rmd",
+      "output_file": "performance-dashboard_id_annotation.html",
+      "upload_to_synapse": true,
+      "destination_folder_synapse_id": "syn26127246",
+      "notebook_parameters":
+      {
+        "source_table_score_column": "location_F1_instance_relax",
+        "evaluation_id": 9614797
+      }
+    },
+
+    {
+      "name": "Performance - Location Annotation",
+      "title": "NLP Sandbox Location Annotation Performance Dashboard",
+      "markdown_file": "performance-dashboard.Rmd",
+      "output_file": "performance-dashboard_location_annotation.html",
+      "upload_to_synapse": true,
+      "destination_folder_synapse_id": "syn26127246",
+      "notebook_parameters":
+      {
+        "source_table_score_column": "location_F1_instance_relax",
+        "evaluation_id": 9614658
+      }
+    },
+
+
+
     {
       "name": "Participation - All",
       "title": "NLP Sandbox Participation Dashboard",
@@ -13,6 +86,7 @@
         "evaluation_ids": [9614652, 9614657, 9614799, 9614797, 9614658]
       }
     },
+
     {
       "name": "Participation - MCW",
       "title": "NLP Sandbox Participation Dashboard - MCW",
@@ -28,5 +102,6 @@
         "filter_table_synapse_id": "syn25582644"
       }
     }
+
   ]
 }
