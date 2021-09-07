@@ -10,7 +10,6 @@
       "destination_folder_synapse_id": "syn26127246",
       "notebook_parameters":
       {
-        "source_table_score_column": "location_F1_instance_relax",
         "evaluation_id": 9614652
       }
     },
@@ -24,7 +23,6 @@
       "destination_folder_synapse_id": "syn26127246",
       "notebook_parameters":
       {
-        "source_table_score_column": "location_F1_instance_relax",
         "evaluation_id":  9614657
       }
     },
@@ -38,7 +36,6 @@
       "destination_folder_synapse_id": "syn26127246",
       "notebook_parameters":
       {
-        "source_table_score_column": "location_F1_instance_relax",
         "evaluation_id": 9614799
       }
     },
@@ -52,7 +49,6 @@
       "destination_folder_synapse_id": "syn26127246",
       "notebook_parameters":
       {
-        "source_table_score_column": "location_F1_instance_relax",
         "evaluation_id": 9614797
       }
     },
@@ -66,7 +62,6 @@
       "destination_folder_synapse_id": "syn26127246",
       "notebook_parameters":
       {
-        "source_table_score_column": "location_F1_instance_relax",
         "evaluation_id": 9614658
       }
     },
