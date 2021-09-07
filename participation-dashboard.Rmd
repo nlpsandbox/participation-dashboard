@@ -134,7 +134,7 @@ Row
 
 ```{r}
 n_unique_tasks     <- length(unique(submission_table$evaluationid))
-flexdashboard::valueBox(n_unique_tasks , icon = "fa-clipboard")
+flexdashboard::valueBox(n_unique_tasks , icon = "fa-tasks")
 ```
 
 ### Number of Submitters
@@ -151,7 +151,7 @@ Row
 
 ```{r}
 version <- gh::gh("GET /repos/nlpsandbox/nlpsandbox-schemas/releases")[[1]]$tag_name
-flexdashboard::valueBox(version, icon = "fa-git")
+flexdashboard::valueBox(version, icon = "fa-project-diagram")
 ```
 
 
@@ -159,7 +159,7 @@ flexdashboard::valueBox(version, icon = "fa-git")
 
 ```{r}
 n_unique_tools      <- length(unique(submission_table$tool__name))
-flexdashboard::valueBox(n_unique_tools, icon = "fa-toolbox")
+flexdashboard::valueBox(n_unique_tools, icon = "fa-cog")
 ```
 
 
@@ -177,7 +177,7 @@ flexdashboard::valueBox(n_unique_datasets, icon = "fa-database")
 ### Number of Data sites
 
 ```{r}
-flexdashboard::valueBox(2, icon = "fa-building")
+flexdashboard::valueBox(2, icon = "fa-hospital")
 ```
 
 Row
@@ -194,7 +194,21 @@ n_users <- 3413388L %>%
 flexdashboard::valueBox(n_users, icon = "fa-users")
 ```
 
-### Placeholder
+### Number of successful submissions in the last month.
+
+```{r}
+n_statuses <- submission_table %>%
+  dplyr::filter(.data$datetime > (lubridate::now() - lubridate::dmonths(1))) %>% 
+  dplyr::pull("status") 
+  
+
+flexdashboard::gauge(
+  value = length(purrr::keep(n_statuses, ~.x == "ACCEPTED")),
+  min = 0,
+  max = length(n_statuses)
+)
+
+```
 
 
 
@@ -231,7 +245,9 @@ n_submission_table %>%
   ggplot2::ggplot() +
   ggplot2::aes(x = label, y = count) +
   ggplot2::geom_bar(stat = "identity", fill = "steelblue") +
-  ggplot2::theme_minimal()
+  ggplot2::theme_minimal() +
+  ggplot2::xlab("Month") + 
+  ggplot2::ylab("Count")
 
 
 ```
@@ -266,29 +282,10 @@ n_submitter_table %>%
   ggplot2::ggplot() +
   ggplot2::aes(x = label, y = count) +
   ggplot2::geom_bar(stat = "identity", fill = "steelblue") +
-  ggplot2::theme_minimal()
+  ggplot2::theme_minimal() +
+  ggplot2::xlab("Month") + 
+  ggplot2::ylab("Count")
 
 
 ```
-
-Row 
------------------------------------------------------------------------
-
-### Number of successful submissions in the last month.
-
-```{r}
-n_statuses <- submission_table %>%
-  dplyr::filter(.data$datetime > (lubridate::now() - lubridate::dmonths(1))) %>% 
-  dplyr::pull("status") 
-  
-
-flexdashboard::gauge(
-  value = length(purrr::keep(n_statuses, ~.x == "ACCEPTED")),
-  min = 0,
-  max = length(n_statuses)
-)
-
-```
-
-### Placeholder
 
