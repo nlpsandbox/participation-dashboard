@@ -2,7 +2,7 @@
 author: "Andrew Lamb"
 output: 
   flexdashboard::flex_dashboard:
-    orientation: rows
+    orientation: columns
     vertical_layout: scroll
 params:
   title: "NLP Sandbox Participation Dashboard"
@@ -118,106 +118,17 @@ year_month_table <-
 ```
 
 
-Row {data-height=75}
------------------------------------------------------------------------
+Column {data-width=800}
+-------------------------------------
 
 ### **Overview**
 
 Submission data — from Synapse table `r params$source_table_synapse_id` — was downloaded using the `synapser` package for R on `r lubridate::now("UTC")` UTC. 
 
 
-
-Row
------------------------------------------------------------------------
-
-### Number of Tasks Open
-
-```{r}
-n_unique_tasks     <- length(unique(submission_table$evaluationid))
-flexdashboard::valueBox(n_unique_tasks , icon = "fa-tasks")
-```
-
-### Number of Submitters
-
-```{r}
-n_unique_submitters <- length(unique(submission_table$submitterid))
-flexdashboard::valueBox(n_unique_submitters, icon = "fa-users")
-```
-
-
-Row
------------------------------------------------------------------------
-### Latest version of the NLP Sandbox schemas
-
-```{r}
-version <- gh::gh("GET /repos/nlpsandbox/nlpsandbox-schemas/releases")[[1]]$tag_name
-flexdashboard::valueBox(version, icon = "fa-project-diagram")
-```
-
-
-### Number of Tools
-
-```{r}
-n_unique_tools      <- length(unique(submission_table$tool__name))
-flexdashboard::valueBox(n_unique_tools, icon = "fa-cog")
-```
-
-
-
-Row
------------------------------------------------------------------------
-
-### Number of Datasets
-
-```{r}
-n_unique_datasets   <- length(unique(submission_table$dataset_name))
-flexdashboard::valueBox(n_unique_datasets, icon = "fa-database")
-```
-
-### Number of Data sites
-
-```{r}
-flexdashboard::valueBox(2, icon = "fa-hospital")
-```
-
-Row
------------------------------------------------------------------------
-
-### Number of Users
-
-```{r}
-n_users <- 3413388L %>% 
-  synapser::synGetTeamMembers() %>% 
-  synapser::as.list() %>% 
-  length()
-  
-flexdashboard::valueBox(n_users, icon = "fa-users")
-```
-
-### Number of successful submissions in the last month.
-
-```{r}
-n_statuses <- submission_table %>%
-  dplyr::filter(.data$datetime > (lubridate::now() - lubridate::dmonths(1))) %>% 
-  dplyr::pull("status") 
-  
-
-flexdashboard::gauge(
-  value = length(purrr::keep(n_statuses, ~.x == "ACCEPTED")),
-  min = 0,
-  max = length(n_statuses)
-)
-
-```
-
-
-
-Row 
------------------------------------------------------------------------
-
 ### Number of submissions per month in the last year.
 
-```{r fig.width=15,fig.height=5}
+```{r fig.width=23,fig.height=5}
 
 n_submission_count_table <- submission_table %>% 
   dplyr::select("year", "month", "date") %>% 
@@ -254,7 +165,7 @@ n_submission_table %>%
 
 ### Number of unique submitters per month
 
-```{r fig.width=15,fig.height=5}
+```{r fig.width=23,fig.height=5}
 
 n_submitter_count_table <- submission_table %>% 
   dplyr::filter(.data$date > (lubridate::now() - lubridate::dyears(1))) %>% 
@@ -288,4 +199,80 @@ n_submitter_table %>%
 
 
 ```
+
+
+Column {data-width=200}
+-------------------------------------
+
+### Number of Tasks Open
+
+```{r}
+n_unique_tasks     <- length(unique(submission_table$evaluationid))
+flexdashboard::valueBox(n_unique_tasks , icon = "fa-tasks")
+```
+
+### Number of Submitters
+
+```{r}
+n_unique_submitters <- length(unique(submission_table$submitterid))
+flexdashboard::valueBox(n_unique_submitters, icon = "fa-users")
+```
+
+### Latest version of the NLP Sandbox schemas
+
+```{r}
+version <- gh::gh("GET /repos/nlpsandbox/nlpsandbox-schemas/releases")[[1]]$tag_name
+flexdashboard::valueBox(version, icon = "fa-project-diagram")
+```
+
+
+### Number of Tools
+
+```{r}
+n_unique_tools      <- length(unique(submission_table$tool__name))
+flexdashboard::valueBox(n_unique_tools, icon = "fa-cog")
+```
+
+
+### Number of Datasets
+
+```{r}
+n_unique_datasets   <- length(unique(submission_table$dataset_name))
+flexdashboard::valueBox(n_unique_datasets, icon = "fa-database")
+```
+
+### Number of Data sites
+
+```{r}
+flexdashboard::valueBox(2, icon = "fa-hospital")
+```
+
+### Number of Users
+
+```{r}
+n_users <- 3413388L %>% 
+  synapser::synGetTeamMembers() %>% 
+  synapser::as.list() %>% 
+  length()
+  
+flexdashboard::valueBox(n_users, icon = "fa-users")
+```
+
+### Number of successful submissions in the last month.
+
+```{r}
+n_statuses <- submission_table %>%
+  dplyr::filter(.data$datetime > (lubridate::now() - lubridate::dmonths(1))) %>% 
+  dplyr::pull("status") 
+  
+
+flexdashboard::gauge(
+  value = length(purrr::keep(n_statuses, ~.x == "ACCEPTED")),
+  min = 0,
+  max = length(n_statuses)
+)
+
+```
+
+
 
