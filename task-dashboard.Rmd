@@ -56,7 +56,7 @@ Submission data — from Synapse table `r params$source_table_synapse_id` — wa
 Row
 -----------------------------------------------------------------------
 
-### Date annotation
+###
 
 ```{r}
 date_annotation_score <- score_table %>% 
@@ -65,8 +65,9 @@ date_annotation_score <- score_table %>%
   max
 
 flexdashboard::valueBox(
-  date_annotation_score,
-  color = color_function(date_annotation_score)
+  "Date annotation",
+  color = color_function(date_annotation_score),
+  caption = shiny::h1(date_annotation_score)
 )
 ```
 
