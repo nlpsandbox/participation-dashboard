@@ -1,19 +1,21 @@
 ---
 author: "Andrew Lamb"
-output: 
-  flexdashboard::flex_dashboard:
-    orientation: rows
-    vertical_layout: scroll
 params:
   title: "NLP Sandbox Task Dashboard"
   source_table_synapse_id: "syn23633030"
   source_table_score_column: "location_F1_instance_relax"
 title: "`r params$title`"
+output:
+  flexdashboard::flex_dashboard:
+    css: "./task-dashboard.css"
+    orientation: rows
+    vertical_layout: scroll
 ---
 
-```{r setup, include=FALSE}
+```{r setup, include = FALSE, context = "server"}
 library(magrittr)
 ```
+
 
 ```{r, message=FALSE, include=FALSE}
 synapser::synLogin()
@@ -65,13 +67,13 @@ date_annotation_score <- score_table %>%
   max
 
 flexdashboard::valueBox(
-  "Date annotation",
+  value = "Date Annotation",
   color = color_function(date_annotation_score),
-  caption = shiny::h1(date_annotation_score)
+  caption = date_annotation_score
 )
 ```
 
-### Person Name Annotation
+### 
 
 ```{r}
 person_name_annotation_score <- score_table %>% 
@@ -80,27 +82,9 @@ person_name_annotation_score <- score_table %>%
   max
 
 flexdashboard::valueBox(
-  person_name_annotation_score, 
-  color = color_function(person_name_annotation_score)
+  "Person Name Annotation",
+  color = color_function(person_name_annotation_score),
+  caption = person_name_annotation_score
 )
 ```
 
-### Medium score
-
-```{r}
-flexdashboard::valueBox(
-  0.5, 
-  color = color_function(0.5)
-)
-```
-
-### Low score
-
-```{r}
-flexdashboard::valueBox(
-  0.2, 
-  color = color_function(0.2)
-)
-```
-
-### Placeholder
