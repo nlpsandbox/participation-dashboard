@@ -1,5 +1,4 @@
 ---
-author: "Andrew Lamb"
 params:
   title: "NLP Sandbox Task Dashboard"
   source_table_synapse_id: "syn23633030"
