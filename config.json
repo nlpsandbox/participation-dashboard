@@ -3,11 +3,11 @@
 
     {
       "name": "Performance - Date Annotation",
-      "title": "NLP Sandbox Date Annotation Performance Dashboard",
+      "title": "NLP Sandbox Date Annotators",
       "markdown_file": "performance-dashboard.Rmd",
-      "output_file": "performance-dashboard_date_annotation.html",
+      "output_file": "performance-dashboard-date-annotation.html",
       "upload_to_synapse": true,
-      "destination_folder_synapse_id": "syn26127246",
+      "destination_folder_synapse_id": "syn26156540",
       "notebook_parameters":
       {
         "evaluation_id": 9614652
@@ -16,11 +16,11 @@
 
     {
       "name": "Performance - Person Name annotation",
-      "title": "NLP Sandbox Person Name Annotation Performance Dashboard",
+      "title": "NLP Sandbox Person Name Annotators,
       "markdown_file": "performance-dashboard.Rmd",
-      "output_file": "performance-dashboard_person_name_annotation.html",
+      "output_file": "performance-dashboard-person-name-annotation.html",
       "upload_to_synapse": true,
-      "destination_folder_synapse_id": "syn26127246",
+      "destination_folder_synapse_id": "syn26156540",
       "notebook_parameters":
       {
         "evaluation_id":  9614657
@@ -29,11 +29,11 @@
 
     {
       "name": "Performance - Contact Annotation",
-      "title": "NLP Sandbox Contact Annotation Performance Dashboard",
+      "title": "NLP Sandbox Contact Annotators",
       "markdown_file": "performance-dashboard.Rmd",
-      "output_file": "performance-dashboard_contact_annotation.html",
+      "output_file": "performance-dashboard-contact-annotation.html",
       "upload_to_synapse": true,
-      "destination_folder_synapse_id": "syn26127246",
+      "destination_folder_synapse_id": "syn26156540",
       "notebook_parameters":
       {
         "evaluation_id": 9614799
@@ -42,11 +42,11 @@
 
     {
       "name": "Performance - ID Annotation",
-      "title": "NLP Sandbox ID Annotation Performance Dashboard",
+      "title": "NLP Sandbox ID Annotators",
       "markdown_file": "performance-dashboard.Rmd",
-      "output_file": "performance-dashboard_id_annotation.html",
+      "output_file": "performance-dashboard-id-annotation.html",
       "upload_to_synapse": true,
-      "destination_folder_synapse_id": "syn26127246",
+      "destination_folder_synapse_id": "syn26156540",
       "notebook_parameters":
       {
         "evaluation_id": 9614797
@@ -55,11 +55,11 @@
 
     {
       "name": "Performance - Location Annotation",
-      "title": "NLP Sandbox Location Annotation Performance Dashboard",
+      "title": "NLP Sandbox Location Annotators",
       "markdown_file": "performance-dashboard.Rmd",
-      "output_file": "performance-dashboard_location_annotation.html",
+      "output_file": "performance-dashboard-location-annotation.html",
       "upload_to_synapse": true,
-      "destination_folder_synapse_id": "syn26127246",
+      "destination_folder_synapse_id": "syn26156540",
       "notebook_parameters":
       {
         "evaluation_id": 9614658
@@ -74,7 +74,7 @@
       "markdown_file": "participation-dashboard.Rmd",
       "output_file": "participation-dashboard.html",
       "upload_to_synapse": true,
-      "destination_folder_synapse_id": "syn26127246",
+      "destination_folder_synapse_id": "syn26156540",
       "notebook_parameters":
       {
         "source_table_synapse_id": "syn23633030",
@@ -88,7 +88,7 @@
       "markdown_file": "participation-dashboard.Rmd",
       "output_file": "participation-dashboard-mcw.html",
       "upload_to_synapse": true,
-      "destination_folder_synapse_id": "syn26127246",
+      "destination_folder_synapse_id": "syn26156540",
       "notebook_parameters":
       {
         "source_table_synapse_id": "syn23633030",
