@@ -19,5 +19,5 @@ RUN Rscript -e "install.packages('argparse')" \
     && Rscript -e "install.packages('synapser', repos=c('http://ran.synapse.org', 'http://cran.fhcrc.org'))"
 
 WORKDIR /
-COPY participation-dashboard.Rmd performance-dashboard.Rmd render_markdown.R config.json ./
+COPY participation-dashboard.Rmd performance-dashboard.Rmd task-dashboard.Rmd task-dashboard.css render_markdown.R config.json ./
 RUN chmod a+x render_markdown.R

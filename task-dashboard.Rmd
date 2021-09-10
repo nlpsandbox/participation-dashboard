@@ -1,0 +1,90 @@
+---
+author: "Andrew Lamb"
+params:
+  title: "NLP Sandbox Task Dashboard"
+  source_table_synapse_id: "syn23633030"
+  source_table_score_column: "location_F1_instance_relax"
+title: "`r params$title`"
+output:
+  flexdashboard::flex_dashboard:
+    css: "./task-dashboard.css"
+    orientation: rows
+    vertical_layout: scroll
+---
+
+```{r setup, include = FALSE, context = "server"}
+library(magrittr)
+```
+
+
+```{r, message=FALSE, include=FALSE}
+synapser::synLogin()
+
+score_table <-
+  stringr::str_c(
+    "select evaluationid, ",
+    params$source_table_score_column,
+    " from ", 
+    params$source_table_synapse_id, 
+    " where submission_status = 'SCORED'"
+  ) %>%
+  synapser::synTableQuery() %>%
+  purrr::pluck("filepath") %>%
+  readr::read_csv() %>%
+  dplyr::select(
+    "evaluationid",
+    "score" = params$source_table_score_column
+  ) 
+
+
+
+color_function <- function(val){
+  colors <- RColorBrewer::brewer.pal(10, "RdYlGn")
+  colors[round(val *10)]
+} 
+
+```
+
+
+Row {data-height=75}
+-----------------------------------------------------------------------
+
+### **Overview**
+
+Submission data — from Synapse table `r params$source_table_synapse_id` — was downloaded using the `synapser` package for R on `r lubridate::now("UTC")` UTC. 
+
+
+
+Row
+-----------------------------------------------------------------------
+
+###
+
+```{r}
+date_annotation_score <- score_table %>% 
+  dplyr::filter(.data$evaluationid == 9614652) %>% 
+  dplyr::pull("score") %>% 
+  max
+
+flexdashboard::valueBox(
+  value = "Date Annotation",
+  color = color_function(date_annotation_score),
+  caption = date_annotation_score
+)
+```
+
+### 
+
+```{r}
+person_name_annotation_score <- score_table %>% 
+  dplyr::filter(.data$evaluationid == 9614657) %>% 
+  dplyr::pull("score") %>% 
+  max
+
+flexdashboard::valueBox(
+  "Person Name Annotation",
+  color = color_function(person_name_annotation_score),
+  caption = person_name_annotation_score
+)
+```
+
