@@ -1,5 +1,4 @@
 ---
-author: "Andrew Lamb"
 output: 
   flexdashboard::flex_dashboard:
     orientation: rows
@@ -62,13 +61,6 @@ score_table <-
 
 ```
 
-
-Row {data-height=75}
------------------------------------------------------------------------
-
-### **Overview**
-
-Submission data — from Synapse table `r params$source_table_synapse_id` — was downloaded using the `synapser` package for R on `r lubridate::now("UTC")` UTC. 
 
 
 Row 
