@@ -16,7 +16,7 @@
 
     {
       "name": "Performance - Person Name annotation",
-      "title": "NLP Sandbox Person Name Annotators,
+      "title": "NLP Sandbox Person Name Annotators",
       "markdown_file": "performance-dashboard.Rmd",
       "output_file": "performance-dashboard-person-name-annotation.html",
       "upload_to_synapse": true,
