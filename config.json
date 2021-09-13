@@ -2,6 +2,16 @@
   "jobs": [
 
     {
+      "name": "Task Dashboard",
+      "title": "NLP Sandbox Task Dashboard",
+      "markdown_file": "task-dashboard.Rmd",
+      "output_file": "task-dashboard.html",
+      "upload_to_synapse": true,
+      "destination_folder_synapse_id": "syn26156540",
+      "notebook_parameters":  {}
+    },
+
+    {
       "name": "Performance - Date Annotation",
       "title": "NLP Sandbox Date Annotators",
       "markdown_file": "performance-dashboard.Rmd",
@@ -16,7 +26,7 @@
 
     {
       "name": "Performance - Person Name annotation",
-      "title": "NLP Sandbox Person Name Annotators,
+      "title": "NLP Sandbox Person Name Annotators",
       "markdown_file": "performance-dashboard.Rmd",
       "output_file": "performance-dashboard-person-name-annotation.html",
       "upload_to_synapse": true,
