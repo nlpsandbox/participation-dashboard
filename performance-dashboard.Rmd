@@ -10,7 +10,7 @@ params:
   plot_title": "Performance"
   x_axis_label: "Date"
   y_axis_label: "Score"
-  evaluation_id: 0
+  evaluation_id: 9614652
 
 title: "`r params$title`"
 ---
@@ -57,7 +57,13 @@ score_table <-
   dplyr::mutate(
     "temp_max" = .data$score > cummax(dplyr::lag(.data$score, default = 0))
   ) %>% 
-  dplyr::select("score", "date", "datetime", "temp_max", "tool__author", "tool__name")
+  dplyr::select("score", "date", "datetime", "temp_max", "tool__author", "tool__name") %>% 
+  dplyr::mutate("text" = paste(
+    '</br> Team: ', .data$tool__author,
+    '</br> Tool: ', .data$tool__name,
+    '</br> Score: ', .data$score,
+    '</br> Date Time: ', .data$datetime
+  )) 
 
 ```
 
@@ -70,9 +76,19 @@ Row
 
 ```{r}
 
-plot <-
+best_tool <- score_table %>% 
+  dplyr::select("score", "date", "text", "temp_max") %>% 
+  dplyr::filter(.data$score == max(.data$score)) %>% 
+  dplyr::add_row(
+    "score" = .$score,
+    "date" = seq(.$date, max(score_table$date), length.out = 20), 
+    "text" = .$text,
+    "temp_max" = .$temp_max
+  )
+
+
+plot <- score_table %>% 
   plotly::plot_ly(
-    data = score_table,
     x = ~date,
     y = ~score,
     type = "scatter",
@@ -80,12 +96,7 @@ plot <-
     color = ~temp_max,
     hoverinfo = 'text',
     showlegend = FALSE,
-    text = ~paste(
-      '</br> Team: ', tool__author,
-      '</br> Tool: ', tool__name,
-      '</br> Score: ', score,
-      '</br> Date Time: ', datetime
-    )
+    text = ~text
   ) %>%
   plotly::add_trace(
     data = dplyr::filter(score_table, .data$temp_max),
@@ -94,6 +105,15 @@ plot <-
     type ="scatter",
     mode = "lines"
   ) %>%
+  plotly::add_trace(
+    data = best_tool,
+    x = ~date,
+    y = ~score,
+    type ="scatter",
+    mode = "lines",
+    hoverinfo = 'text',
+    text = ~text
+  ) %>%
   plotly::layout(
     title = params$plot_title,
     xaxis = list(title = params$x_axis_label),
@@ -101,8 +121,10 @@ plot <-
       title = params$y_axis_label,
       range = list(0, 1)
     )
-  ) %>% 
+  ) %>%
   plotly::partial_bundle()
+
+
 
 
 plot
